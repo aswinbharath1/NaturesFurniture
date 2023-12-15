@@ -1,0 +1,248 @@
+{% extends 'dashboard/base.html' %}
+{% block bootstraplink%}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+{% endblock %}
+{% block content %}
+<main class="ms-sm-auto col-lg-12 px-md-4">
+    <h2 class="mt-3">Product</h2>
+
+    <!-- Button to Open add categories Modal -->
+    <button type="button" class="btn btn-primary mt-4" data-toggle="modal" data-target="#addproductModal">
+        Add Product
+    </button>
+    {% if messages %}
+    <div class="text-danger d-flex justify-content-center mt-2">
+        {% for message in messages%}
+        {{message}}
+        {%endfor%}
+    </div>
+    {% endif %}
+
+    <div class="table-responsive mt-4">
+        <table id="example" class="table table-striped bordered table-sm">
+            <thead>
+                <tr>
+                    <th>category</th>
+                    <th>sub category</th>
+                    <th>Product Name</th>
+                    <th>Product description</th>
+                    <th></th>
+                    <th></th>
+                    
+
+
+                    <!-- <th>category image</th> -->
+                    <th colspan="3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--dynamically populating this table with user data from backend-->
+
+                {% for product in products %}
+                <tr class="table-rows">
+                    <td>{{ product.category }}</td>
+                    <td>{{ product.sub_category}}</td>
+                    <td>{{ product.product_name}}</td>
+                    <!-- <td><img src="/media/{{product.images}}" width="60%"></td> -->
+                    <td>{{ product.description}}</td>
+                    <!-- <td>{{ product.price}}</td> -->
+                    <td>
+                        <a href="{% url 'variant_view' product_id=product.id %}">
+                            <button class="btn btn-dark">Variants</button>
+                        </a>
+
+                    </td>
+
+                    <td>
+                        <button class="btn btn-info toggle-btn" data-toggle="modal"
+                            data-target="#editProductModal-{{forloop.counter}}">Edit</button>
+
+                    </td>
+                    <td>
+                        {% if product.is_activate %}
+                        <a href="{% url 'delete_product' product_id=product.id %}">
+                            <button class="btn btn-danger toggle-btn">Deactivate</button>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'delete_product' product_id=product.id %}">
+                            <button class="btn btn-success toggle-btn">Activate</button>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                <!-- Repeating  this loop  for each user -->
+            </tbody>
+        </table>
+    </div>
+    {% for product in products %}
+    <!--Edit product Modal -->
+    <div class="modal fade" id="editProductModal-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- <form method="POST" action="{% url 'edit_product' product_id=product.id %}"  enctype="multipart/form-data"> -->
+                    <form method="POST" action="{% url 'edit_product' product_id=product.id %}" enctype="multipart/form-data" onsubmit="return validateEditProductForm(this);">
+
+                        {% csrf_token %}
+
+                        <div class="modal-body">
+                            <div class="form-row">
+                                <!-- Sub Category Field -->
+                                <div class="form-group col-md-6">
+                                    <label for="category">Sub Category:</label>
+                                    <select class="form-control" name="subcategory_name" required>
+                                        {% for subcategories in sub_category %}
+                                        <option value="{{subcategories.id}}">{{subcategories.sub_category_name}}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <!-- Product Name Field -->
+                                <div class="form-group col-md-6">
+                                    <label for="categoryName">Product Name:</label>
+                                    <input type="text" class="form-control" id="product_name" name="product_name"
+                                        value="{{product.product_name}}" required>
+                                </div>
+                            </div>
+                            <!-- Description Field (Alone in its Row) -->
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="productDescription">Description:</label>
+                                    <textarea class="form-control" id="productDescription" name="product_description"
+                                        rows="4" required>{{product.description}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success" id="submitCategory">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Add products modal -->
+    <div class="modal fade" id="addproductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-fixed" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- <form method="POST" action="{% url 'add_product' %}" enctype="multipart/form-data"> -->
+                <form method="POST" action="{% url 'add_product' %}" enctype="multipart/form-data" onsubmit="return validateAddProductForm(this);">
+
+                    {% csrf_token %}
+                    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                        <div class="form-row">
+                            <!-- Sub Category Field -->
+                            <div class="form-group col-md-6">
+                                <label for="category">Sub Category:</label>
+                                <select class="form-control" name="subcategory_name" required>
+                                    {% for subcategories in sub_category %}
+                                    <option value="{{subcategories.id}}">{{subcategories.sub_category_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <!-- Product Name Field -->
+                            <div class="form-group col-md-6">
+                                <label for="categoryName">Product Name:</label>
+                                <input type="text" class="form-control" id="product_name" name="product_name"
+                                    value="{{category.category_name}}" required>
+                            </div>
+                        </div>
+                        <!-- Product Description Field -->
+                        <div class="form-group">
+                            <label for="productDescription"> Description:</label>
+                            <textarea class="form-control" id="productDescription" name="product_description" rows="4"
+                                required></textarea>
+                        </div>
+                        <!-- Button to Add Variants -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" id="submitCategory">Submit</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+</main>
+
+{% endblock%}
+
+
+{% block script%}
+<!-- jQuery first, then DataTables and Bootstrap scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+</script>
+<!-- ... Bootstrap and other scripts ... -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+<script>
+    function validateAddProductForm(form) {
+        var productName = form.product_name.value.trim();
+        var productDescription = form.product_description.value.trim();
+
+        if (productName === '' || productDescription === '') {
+            alert('Product name and description are required.');
+            return false;
+        }
+
+        if (/^\s+$/.test(productName) || /^\s+$/.test(productDescription)) {
+            alert('Product name and description should not contain only spaces.');
+            return false;
+        }
+
+        return true;
+    }
+</script>
+<script>
+    function validateEditProductForm(form) {
+        var productName = form.product_name.value.trim();
+        var productDescription = form.product_description.value.trim();
+
+        if (productName === '' || productDescription === '') {
+            alert('Product name and description are required.');
+            return false;
+        }
+
+        if (/^\s+$/.test(productName) || /^\s+$/.test(productDescription)) {
+            alert('Product name and description should not contain only spaces.');
+            return false;
+        }
+
+        return true;
+    }
+</script>
+{% endblock %}
