@@ -10,4 +10,5 @@ payment (razorpay,cod,wallet)
 admin
 product
 category
-subcategorya
+subcategory
+coupon
