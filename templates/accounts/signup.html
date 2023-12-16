@@ -15,61 +15,64 @@
                         <span class="h1 fw-bold mb-0">Nature's Furniture</span>
                     </div>
                     <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
-                        <form method='POST' style="width: 23rem;" onsubmit="return validateForm();">
+                        <div class="card p-4" style="width: 23rem; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                            <form method='POST' onsubmit="return validateForm();">
 
-                            {% csrf_token %}
-                            {% if messages %}
-                                <div class="alert alert-danger text-center" role="alert">
-                                    {% for message in messages %}
-                                        {{ message }}
-                                    {% endfor %}
+                                {% csrf_token %}
+                                {% if messages %}
+                                    <div class="alert alert-danger text-center" role="alert">
+                                        {% for message in messages %}
+                                            {{ message }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Register</h3>
+
+                                <!-- Name Field -->
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="What's your name?" required>
+                                    <small class="form-text text-muted">Enter your first and last name.</small>
                                 </div>
-                            {% endif %}
 
-                            <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Register</h3>
+                                <!-- Email Field -->
+                                <div class="form-group">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="What's your email?" required>
+                                    <small class="form-text text-muted">Enter a valid email address.</small>
+                                </div>
 
-                            <!-- Name Field -->
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="username" name="username" placeholder="What's your name?" required>
-                                <small class="form-text text-muted">Enter your first and last name.</small>
-                            </div>
+                                <!-- Mobile No Field -->
+                                <div class="form-group">
+                                    <input type="tel" class="form-control" id="phone_no" name="phone_no" placeholder="What's your phone number?" required>
+                                    <small class="form-text text-muted">Enter a valid mobile number.</small>
+                                </div>
 
-                            <!-- Email Field -->
-                            <div class="form-group">
-                                <input type="email" class="form-control" id="email" name="email" placeholder="What's your email?" required>
-                                <small class="form-text text-muted">Enter a valid email address.</small>
-                            </div>
+                                <!-- Password Field -->
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                                    <small class="form-text text-muted">Enter a valid password with at least 8 characters, including numbers, alphabets, and special characters.</small>
+                                </div>
 
-                            <!-- Mobile No Field -->
-                            <div class="form-group">
-                                <input type="tel" class="form-control" id="phone_no" name="phone_no" placeholder="What's your phone number?" required>
-                                <small class="form-text text-muted">Enter a valid mobile number.</small>
-                            </div>
+                                <!-- Confirm Password Field -->
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Confirm password" required>
+                                    <small class="form-text text-muted">Confirm your password.</small>
+                                </div>
 
-                            <!-- Password Field -->
-                            <div class="form-group">
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                                <small class="form-text text-muted">Enter a valid password with at least 8 characters, including numbers, alphabets, and special characters.</small>
-                            </div>
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-primary btn-block signup-button mt-3">Send OTP</button>
+                                </div>
 
-                            <!-- Confirm Password Field -->
-                            <div class="form-group">
-                                <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Confirm password" required>
-                                <small class="form-text text-muted">Confirm your password.</small>
-                            </div>
-
-                            <div class="d-flex justify-content-center">
-                                <button type="submit" class="btn btn-primary btn-block signup-button mt-3">Send OTP</button>
-                            </div>
-
-                            <p class="text-center mt-3">Already have an account? <a href="{% url "user_login" %}" class="link-info">Login here</a></p>
-                        </form>
+                                <p class="text-center mt-3">Already have an account? <a href="{% url "user_login" %}" class="link-info">Login here</a></p>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 </div>
+
 
 <script>
     function validateForm() {
