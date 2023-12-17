@@ -72,13 +72,17 @@
         </div>
     </section>
 </div>
+<div style="height: 250px; width: 100%; background-color: #709085;"></div>
+
+{% endblock %}
 
 
+{% block script %}
 <script>
     function validateForm() {
         // Add your custom validation logic here
         // You can use JavaScript to validate fields based on common e-commerce standards
-
+        
         // Example validation for a valid email
         var email = document.getElementById("email").value;
         var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -86,7 +90,7 @@
             alert("Please enter a valid email address.");
             return false;
         }
-
+        
         // Example validation for a valid phone number
         var phoneNo = document.getElementById("phone_no").value;
         var phonePattern = /^(?:(\+91)?[7896]\d{9})?$/;
@@ -94,11 +98,12 @@
             alert("Please enter a valid mobile number.");
             return false;
         }
-
+        
         // Add more validations as needed for other fields
-
+        
         return true; // Submit the form if all validations pass
     }
 </script>
 
-{% endblock %}
+
+{% endblock script %}
