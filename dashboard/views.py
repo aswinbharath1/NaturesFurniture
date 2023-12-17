@@ -715,5 +715,35 @@ def SalesReportPdfDownload(request):
     except Exception as e:
         # Log the exception for debugging purposes
         print(f"An error occurred: {e}")
-        # Return an appropriate HttpResponse in case of an error
-        return HttpResponse("An error occurred while generating the PDF.", status=500)
+
+        # Simple styled error message
+        error_message = """
+            <html>
+            <head>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        color: #333;
+                        text-align: center;
+                        padding: 50px;
+                    }
+
+                    h1 {
+                        color: #d9534f;
+                    }
+
+                    p {
+                        font-size: 18px;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>An error occurred</h1>
+                <p>Sorry, there was an issue while generating the PDF. Please generate the report before downloading the Sales Report.</p>
+            </body>
+            </html>
+        """
+
+        # Return the styled error message as an HttpResponse
+        return HttpResponse(error_message, status=500)
