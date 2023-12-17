@@ -712,5 +712,8 @@ def SalesReportPdfDownload(request):
         }
         pdf = RenderToPdf('dashboard/sales_report_pdf.html', context)
         return pdf
-    except:
-        pass
+    except Exception as e:
+        # Log the exception for debugging purposes
+        print(f"An error occurred: {e}")
+        # Return an appropriate HttpResponse in case of an error
+        return HttpResponse("An error occurred while generating the PDF.", status=500)
