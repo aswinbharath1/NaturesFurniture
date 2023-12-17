@@ -14,7 +14,7 @@
                 <h2>Sales Report </h2>
         
             </div>
-            <form method="post">
+            {% comment %} <form method="post">
                 {% csrf_token %}
                 <div class="row justify-content-around m-4">
                     <div class="col-md-3">
@@ -24,6 +24,22 @@
                     <div class="col-md-3">
                         <label>End Date</label>
                         <input type="date" class="form-control" name="end_date">
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary mt-4" type="submit">Generate Report</button>
+                    </div>
+                </div>
+            </form> {% endcomment %}
+            <form method="post" onsubmit="return validateForm()">
+                {% csrf_token %}
+                <div class="row justify-content-around m-4">
+                    <div class="col-md-3">
+                        <label>Start Date</label>
+                        <input type="date" class="form-control" name="start_date" id="start_date">
+                    </div>
+                    <div class="col-md-3">
+                        <label>End Date</label>
+                        <input type="date" class="form-control" name="end_date" id="end_date">
                     </div>
                     <div class="col-md-3">
                         <button class="btn btn-primary mt-4" type="submit">Generate Report</button>
@@ -129,6 +145,27 @@
     $(document).ready(function () {
         $('#example').DataTable();
     });
+</script>
+<script>
+    function validateForm() {
+        var startDate = document.getElementById("start_date").value;
+        var endDate = document.getElementById("end_date").value;
+
+        if (startDate === "" || endDate === "") {
+            alert("Please select both start date and end date.");
+            return false; // Prevent form submission
+        }
+
+        // Check if start date is before or equal to end date
+        if (new Date(startDate) > new Date(endDate)) {
+            alert("Start date must be equal to or before the end date.");
+            return false; // Prevent form submission
+        }
+
+        // Add any additional validation logic if needed
+
+        return true; // Allow form submission
+    }
 </script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>

@@ -1,4 +1,3 @@
-
 from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 from store.models import *
@@ -37,7 +36,8 @@ def AdminLogin(request):
 
 def AdminHome(request):
     if 'adminmail' in request.session:
-        users_active= CustomUser.objects.filter(is_active=True).count()
+        # users_active= CustomUser.objects.filter(is_active=True ).count()
+        users_active = CustomUser.objects.filter(is_active=True, is_superuser=False).count()
         users_block= CustomUser.objects.filter(is_active=False).count()
         orders_delevered  = Order.objects.filter(status = 'Delevered').count()
         orders_confirmed=Order.objects.filter(status='Order confirmed').count()
@@ -48,12 +48,7 @@ def AdminHome(request):
         total_sales = 0
         for order in orders:
                 total_sales = total_sales + order.total_price
-        print(total_sales)
-        print(total_sales)
-        print(int(total_sales))
-
-        print(total_sales)
-        print(total_sales)
+       
         revenue = 0
     
         context ={
@@ -81,12 +76,14 @@ def AdminLogout(request):
     
 #view function for going to user page 
 def Users(request):
-    user = CustomUser.objects.filter(is_superuser= False).order_by('id')
+    if "adminmail" not in request.session:  
+        user = CustomUser.objects.filter(is_superuser= False).order_by('id')
 
-    context= {
-        'users': user
-    }
-    return render (request, 'dashboard/users.html',context)
+        context= {
+            'users': user
+        }
+        return render (request, 'dashboard/users.html',context)
+    return redirect('admin_login')
 
 #view function for blocking and unblocking the users
 def BlockUser(request, user_id):
@@ -120,14 +117,14 @@ def BlockUser(request, user_id):
         return render(request,'dashboard/users.html',context)
 
 def Categories(request):
+    if 'adminmail' in request.session : 
+        category = Category.objects.all().order_by('id')
+        context={
+            'categories' : category 
+        }
 
-    category = Category.objects.all().order_by('id')
-    context={
-        'categories' : category 
-    }
-
-    return render(request,'dashboard/category.html',context)
-
+        return render(request,'dashboard/category.html',context)
+    return redirect('admin_login')
 
 def AddCategories(request):
 
@@ -143,6 +140,7 @@ def AddCategories(request):
             category = Category(category_name= category_name, description = category_desc , category_image= category_image)
             category.save()
             return redirect('categories')
+        
 def EditCategories(request,category_id):
     category = Category.objects.get(id=category_id)
     category_image=category.category_image
@@ -233,18 +231,22 @@ def DeleteCategories(request,category_id):
 
 # View for displaying subcategories
 def SubCategories(request):
-    # Fetch active categories from the database
-    category = Category.objects.filter(is_activate=True)
-    # Fetch all subcategories and order them by their ID
-    subcategory = Sub_Category.objects.all().order_by('id')
-    context = {
-        'subcategories': subcategory,
-        'categories': category
-    }
-    return render(request, 'dashboard/subcategories.html', context)
+    if 'adminmail' in request.session :    
+        # Fetch active categories from the database
+        category = Category.objects.filter(is_activate=True)
+        # Fetch all subcategories and order them by their ID
+        subcategory = Sub_Category.objects.all().order_by('id')
+        context = {
+            'subcategories': subcategory,
+            'categories': category
+        }
+        return render(request, 'dashboard/subcategories.html', context)
+    return redirect('admin_login')
+
 
 # View for adding subcategories
 def AddSubCategories(request):
+
     if request.method == "POST":
         # Get the selected category's ID from the form
         category_id = request.POST.get('category_name')
@@ -324,13 +326,14 @@ def DeleteSubCategories(request, subcategory_id):
     return render(request,'dashboard/subcategories.html',context)
 
 def coupon(request):
-    
-    coupon=Coupon.objects.all().order_by('id')
+    if 'adminmail' in request.session :
+        coupon=Coupon.objects.all().order_by('id')
 
-    context={
-        'coupon':coupon,
-    }
-    return render(request,'dashboard/coupon.html',context)
+        context={
+            'coupon':coupon,
+        }
+        return render(request,'dashboard/coupon.html',context)
+    return redirect('admin_login')
 
 def add_coupon(request):
     
@@ -400,13 +403,15 @@ def block_coupon(request,coupon_id):
 
 
 def banner(request):
-    banner=Banner.objects.all()
+    if 'adminmail' in request.session : 
+        banner=Banner.objects.all()
 
-    context={
-        'banner':banner,
-    }
+        context={
+            'banner':banner,
+        }
 
-    return render(request,'dashboard/banner.html',context)
+        return render(request,'dashboard/banner.html',context)
+    return redirect('admin_login')
 
 def add_banner(request):
     if request.method=='POST':
@@ -469,16 +474,17 @@ def remove_banner(request,banner_id):
     return redirect('banner')
 
 def Orders(request):
-
-    orders = Order.objects.all()
-    order_items = OrderItem.objects.order_by('order').distinct('order')
-    for i in order_items:
-        print(i.quantity)
-    context={
-        "orders":orders,
-        "orderitems":order_items
-    }
-    return render(request,"dashboard/orders.html",context)
+    if 'adminmail' in request.session : 
+        orders = Order.objects.all()
+        order_items = OrderItem.objects.order_by('order').distinct('order')
+        for i in order_items:
+            print(i.quantity)
+        context={
+            "orders":orders,
+            "orderitems":order_items
+        }
+        return render(request,"dashboard/orders.html",context)
+    return redirect('admin_login')
 
 def OrdersDetails(request,order_id):
     
@@ -494,7 +500,7 @@ def OrdersDetails(request,order_id):
 
 
 def OrderStatus(request):
-  
+
     if request.method == 'POST':
         url = request.META.get('HTTP_REFERER')
         try:
@@ -525,21 +531,7 @@ def OrderStatus(request):
                     userwallet.transaction = 'Credited'
                     userwallet.save()
                     user.save()
-                # for item in order_item:
-                   
-                #     variation_q = Variation.objects.get(product = item.variant)
-                #     print("===========================")
-                #     print("===========================")
-                #     print("===========================")
-                #     print(variation_q)
-                #     print(variation_q)
-                #     print(variation_q)
-                #     print(variation_q)
-                #     print("===========================")
-                #     print("===========================")
-                #     print("===========================")
-                #     variation_q.stock += item.quantity 
-                #     variation_q.save()    
+                
                     
                 order_item.save()
                 
@@ -566,128 +558,122 @@ def OrderStatus(request):
 
 
 def GetSalesRevenue(request):
-    total_sales = 0
-    if request.method == 'POST':
-        users=CustomUser.objects.filter(is_active=True).count()
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
-        print(start_date)
-        request.session['start_date'] = start_date
-        request.session['end_date'] = end_date
-
-        # date_obj = datetime.strptime(start_date, '%d-%m-%Y')
-        # date_obj2 = datetime.strptime(end_date, '%d-%m-%Y')
-
-        # Convert the datetime object to a string in yyyy-mm-dd format
-        # start_date = date_obj.strftime('%Y-%m-%d')
-        # end_date = date_obj2.strftime('%Y-%m-%d')
-
-        if start_date == end_date:
+    if 'adminmail' in request.session :
+        total_sales = 0
+        if request.method == 'POST':
+            users=CustomUser.objects.filter(is_active=True).count()
+            start_date = request.POST.get('start_date')
+            end_date = request.POST.get('end_date')
             print(start_date)
-            orders = Order.objects.filter(created_at__date=start_date)
-        else:
-            orders = Order.objects.filter(created_at__range=(start_date, end_date))
-        total_order = Order.objects.filter(created_at__range=(start_date, end_date)).count()
-        Pending = Order.objects.filter(created_at__range=(start_date, end_date),status='Order confirmed').count()
-        Processing = Order.objects.filter(created_at__range=(start_date, end_date),status="In Production").count()
-        Shipped = Order.objects.filter(created_at__range=(start_date, end_date),status='Shipped').count()
-        Delivered = Order.objects.filter(created_at__range=(start_date, end_date),status='Delivered').count()
-        cancelled = Order.objects.filter(created_at__range=(start_date, end_date),status='Cancelled').count()
-        Return = Order.objects.filter(created_at__range=(start_date, end_date),status='Returned').count()
+            request.session['start_date'] = start_date
+            request.session['end_date'] = end_date
+            if start_date == end_date:
+                print(start_date)
+                orders = Order.objects.filter(created_at__date=start_date)
+            else:
+                orders = Order.objects.filter(created_at__range=(start_date, end_date))
+            total_order = Order.objects.filter(created_at__range=(start_date, end_date)).count()
+            Pending = Order.objects.filter(created_at__range=(start_date, end_date),status='Order confirmed').count()
+            Processing = Order.objects.filter(created_at__range=(start_date, end_date),status="In Production").count()
+            Shipped = Order.objects.filter(created_at__range=(start_date, end_date),status='Shipped').count()
+            Delivered = Order.objects.filter(created_at__range=(start_date, end_date),status='Delivered').count()
+            cancelled = Order.objects.filter(created_at__range=(start_date, end_date),status='Cancelled').count()
+            Return = Order.objects.filter(created_at__range=(start_date, end_date),status='Returned').count()
 
-        for order in orders:
-            total_sales = total_sales + order.total_price
-            
-        context = {
-                "users":users,
-                # 'total':total,
-                'orders': orders,
-                'total_sales': total_sales,
-                'total_order': total_order,
-                'Pending': Pending,
-                'Processing': Processing,
-                'Shipped': Shipped,
-                "Delivered": Delivered,
-                'cancelled': cancelled,
-                'Return': Return,
-                "sales":Delivered,
-                "cancelled":cancelled,
-                # "returned":returned,
-                # 'monthly_sales_data': monthly_sales_data
-            }
-        return render(request, 'dashboard/sales_revenue.html', context)
-
-    else:
-
-        orders = Order.objects.all()
-        total_order = Order.objects.all().count()
-        Pending = Order.objects.filter(status='Order confirmed').count()
-        Processing = Order.objects.filter(status="In Production").count()
-        Shipped = Order.objects.filter(status='Shipped').count()
-        Delivered = Order.objects.filter(status='Delivered').count()
-        cancelled = Order.objects.filter(status='Cancelled').count()
-        Return = Order.objects.filter(status='Returned').count()
-        for order in orders:
-            total_sales = total_sales + order.total_price
-        
-        if 'adminmail' in request.session:
-
-            current_year = timezone.now().year
-
-            # Calculate monthly sales for the current year
-            monthly_sales = Order.objects.filter(
-                created_at__year=current_year
-            ).annotate(month=ExtractMonth('created_at')).values('month').annotate(total_sales=Sum('total_price')).order_by(
-                'month')
-
-            # Create a dictionary to hold the monthly sales data
-            monthly_sales_data = {month: 0 for month in range(1, 13)}
-
-            for entry in monthly_sales:
-                month = entry['month']
-                total_sales = entry['total_sales']
-                monthly_sales_data[month] = total_sales
-            users=CustomUser.objects.all().count()
-            try:
-
-                sales=Order.objects.filter(status="Delivered").count()
-                revenue=Order.objects.filter(status="Delivered")
-                total=0
-                for i in revenue:
-                    total+=i.total_price
-            except:
-                sales=0
-            try:
-
-                cancelled=Order.objects.filter(status="Cancelled").count()
-            except:
-                cancelled=0
-            try:
-
-                returned=Order.objects.filter(status="Returned").count()
-            except:
-                returned=0
-
+            for order in orders:
+                total_sales = total_sales + order.total_price
+                
             context = {
-                "users":users,
-                'total':total,
-                'orders': orders,
-                'total_sales': total_sales,
-                'total_order': total_order,
-                'Pending': Pending,
-                'Processing': Processing,
-                'Shipped': Shipped,
-                "Delivered": Delivered,
-                'cancelled': cancelled,
-                'Return': Return,
-                "sales":sales,
-                "cancelled":cancelled,
-                "returned":returned,
-                'monthly_sales_data': monthly_sales_data
-            }
+                    "users":users,
+                    # 'total':total,
+                    'orders': orders,
+                    'total_sales': total_sales,
+                    'total_order': total_order,
+                    'Pending': Pending,
+                    'Processing': Processing,
+                    'Shipped': Shipped,
+                    "Delivered": Delivered,
+                    'cancelled': cancelled,
+                    'Return': Return,
+                    "sales":Delivered,
+                    "cancelled":cancelled,
+                    # "returned":returned,
+                    # 'monthly_sales_data': monthly_sales_data
+                }
             return render(request, 'dashboard/sales_revenue.html', context)
+
         else:
-            return redirect('admin_login')
+
+            orders = Order.objects.all()
+            total_order = Order.objects.all().count()
+            Pending = Order.objects.filter(status='Order confirmed').count()
+            Processing = Order.objects.filter(status="In Production").count()
+            Shipped = Order.objects.filter(status='Shipped').count()
+            Delivered = Order.objects.filter(status='Delivered').count()
+            cancelled = Order.objects.filter(status='Cancelled').count()
+            Return = Order.objects.filter(status='Returned').count()
+            for order in orders:
+                total_sales = total_sales + order.total_price
+            
+            if 'adminmail' in request.session:
+
+                current_year = timezone.now().year
+
+                # Calculate monthly sales for the current year
+                monthly_sales = Order.objects.filter(
+                    created_at__year=current_year
+                ).annotate(month=ExtractMonth('created_at')).values('month').annotate(total_sales=Sum('total_price')).order_by(
+                    'month')
+
+                # Create a dictionary to hold the monthly sales data
+                monthly_sales_data = {month: 0 for month in range(1, 13)}
+
+                for entry in monthly_sales:
+                    month = entry['month']
+                    total_sales = entry['total_sales']
+                    monthly_sales_data[month] = total_sales
+                users=CustomUser.objects.all().count()
+                try:
+
+                    sales=Order.objects.filter(status="Delivered").count()
+                    revenue=Order.objects.filter(status="Delivered")
+                    total=0
+                    for i in revenue:
+                        total+=i.total_price
+                except:
+                    sales=0
+                try:
+
+                    cancelled=Order.objects.filter(status="Cancelled").count()
+                except:
+                    cancelled=0
+                try:
+
+                    returned=Order.objects.filter(status="Returned").count()
+                except:
+                    returned=0
+
+                context = {
+                    "users":users,
+                    'total':total,
+                    'orders': orders,
+                    'total_sales': total_sales,
+                    'total_order': total_order,
+                    'Pending': Pending,
+                    'Processing': Processing,
+                    'Shipped': Shipped,
+                    "Delivered": Delivered,
+                    'cancelled': cancelled,
+                    'Return': Return,
+                    "sales":sales,
+                    "cancelled":cancelled,
+                    "returned":returned,
+                    'monthly_sales_data': monthly_sales_data
+                }
+                return render(request, 'dashboard/sales_revenue.html', context)
+            else:
+                return redirect('admin_login')
+    return redirect('admin_login')
 
 
 
@@ -705,22 +691,26 @@ def RenderToPdf(template_path, context_dict):
 
 
 def SalesReportPdfDownload(request):
-    if 'start_date' and 'end_date' in request.session:
-         start_date = request.session['start_date']
-         end_date = request.session['end_date']
-         try:
-             order = Order.objects.filter(created_at__range=(start_date, end_date))
-             del request.session['start_date']
-             del request.session['end_date']
-         except:
-             order=None
-    else:
+    try:
 
-        order = Order.objects.all()
-    context = {
-        'orders': order,
-        'start_date':start_date,
-        'end_date':end_date,
-    }
-    pdf = RenderToPdf('dashboard/sales_report_pdf.html', context)
-    return pdf
+        if 'start_date' and 'end_date' in request.session:
+            start_date = request.session['start_date']
+            end_date = request.session['end_date']
+            try:
+                order = Order.objects.filter(created_at__range=(start_date, end_date))
+                del request.session['start_date']
+                del request.session['end_date']
+            except:
+                order=None
+        else:
+
+            order = Order.objects.all()
+        context = {
+            'orders': order,
+            'start_date':start_date,
+            'end_date':end_date,
+        }
+        pdf = RenderToPdf('dashboard/sales_report_pdf.html', context)
+        return pdf
+    except:
+        pass
