@@ -479,7 +479,6 @@ def PlaceOrder(request):
             order.payment_mode = request.POST.get('payment_mode')
             order.payment_id = request.POST.get('payment_id')
         elif payment_mode == 'wallet':
-            print("welcom to wallet")
             try:
                 if request.session['grand_total']:
                     grand_total=float(request.session['grand_total'])
