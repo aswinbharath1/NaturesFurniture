@@ -233,10 +233,13 @@ function validateCouponForm(couponNameId, couponCodeId, discountAmountId, validF
     var minimumAmount = document.getElementById(minimumAmountId).value;
 
     // Perform validations
-    if (couponName === '' || !/^[a-zA-Z0-9]+$/.test(couponCode)) {
-        alert('Please enter a valid coupon name.');
+    
+    // Perform validations
+    if (!/^[a-zA-Z][a-zA-Z\s]{0,9}$/.test(couponName)) {
+        alert('Please enter a valid coupon name with up to 10 letters and spaces.');
         return false;
     }
+
 
     // Check if coupon name is only spaces
     if (/^\s+$/.test(couponName)) {
@@ -245,8 +248,8 @@ function validateCouponForm(couponNameId, couponCodeId, discountAmountId, validF
     }
 
     // Check if coupon name length is between 3 and 12 characters
-    if (couponName.length < 3 || couponName.length > 12) {
-        alert('Coupon name should be between 3 and 12 characters.');
+    if (couponName.length < 3 || couponName.length > 10) {
+        alert('Coupon name should be between 3 and 10 characters.');
         return false;
     }
 
@@ -283,9 +286,11 @@ function validateCouponForm(couponNameId, couponCodeId, discountAmountId, validF
         alert('End date must be after the current date.');
         return false;
     }
-
     // Perform additional validations as needed
-
+    if (!/^\d+$/.test(minimumAmount) || parseInt(minimumAmount, 10) <= 0) {
+        alert('Please enter a valid positive integer for Minimum Amount.');
+        return false;
+    }
     // If all validations pass, return true to submit the form
     return true;
 }

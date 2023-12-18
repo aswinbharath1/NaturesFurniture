@@ -396,7 +396,6 @@ def edit_coupon(request,coupon_id):
 def block_coupon(request,coupon_id):
 
     coupon=Coupon.objects.get(id=coupon_id)
-    print("hjksjhfkjhdkjfhksjdfhksdhfksdjhfksjdhk")
     if coupon.is_available == True:
         
         coupon.is_available=False
@@ -428,7 +427,7 @@ def add_banner(request):
         
        
       
-        if banner_records_count<1:
+        if banner_records_count<2:
 
             if Banner.objects.filter(banner_name=banner_name).exists():
                 messages.error(request,"Entered banner name is already taken!!")

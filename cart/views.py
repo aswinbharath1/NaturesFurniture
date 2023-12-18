@@ -449,7 +449,13 @@ def PlaceOrder(request):
         address = Address.objects.get(id=selected_address_id)
         order = Order()
         order.user = user
-        order.address = address
+        # order.address = address
+        try:
+            order.address = address        
+        except Address.DoesNotExist:
+            # Redirect back to address_checkout with a message
+            messages.error(request, "Please create a new address.")
+            return redirect('address_checkout')
         print(address.id)
         cart = Cart.objects.get(user=user)
         try:
