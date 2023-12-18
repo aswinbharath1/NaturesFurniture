@@ -38,26 +38,12 @@
             </div>
             {% endfor %}
         </div>
-        {% if address %}
-        {% if default_address %}
-            <div class="d-flex justify-content-center mb-5">
-                <button type="submit" class="btn btn-secondary">
-                    GO TO CHECKOUT
-                </button>
-            </div>
-        {% endif %}
-        {% else %}
-        <div class="text-center mt-5">
-            <p style="font-size: 18px; color: red;">No addresses found. Please add an address first.</p>
+        <div class="d-flex justify-content-center mb-5">
+            <button type="submit" class="btn btn-secondary">
+                GO TO CHECKOUT
+            </button>    
         </div>
-         {% endif %}
-
-
-
-
-
-
-</form>
+    </form>
 
  
     <h1 class="d-flex justify-content-center">OR</h1>
@@ -68,7 +54,6 @@
     <div class="d-flex justify-content-center">
         <div class="my-4">
             <form method="POST" action="{% url 'add_address_checkout' user_id=user.id %}">
-
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-md-6">
@@ -133,10 +118,9 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-center col-lg-12 mt-2">
-                    <button type="button" class="btn btn-primary" onclick="validateForm()">
+                    <button type="submit" class="btn btn-primary">
                         Save the Address
                     </button>
-                </div>
                 </div>
             </form>
         </div>
@@ -175,85 +159,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous">
-</script>
-
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelector("form").addEventListener("submit", function (event) {
-            // Validation for Recipient Name
-            var recipientName = document.getElementById("RecipientName").value.trim();
-            if (!recipientName.match(/^[a-zA-Z]+ [a-zA-Z]+$/) || recipientName.length === 0) {
-                alert("Enter a valid Recipient Name");
-                event.preventDefault();
-                return;
-            }
-
-            // Validation for House No
-            var houseNo = document.getElementById("house_no").value.trim();
-            if (!houseNo.match(/^\d{1,10}$/) || houseNo.length === 0) {
-                alert("Enter a valid House Number");
-                event.preventDefault();
-                return;
-            }
-
-            // Validation for Phone Number
-            var phoneNumber = document.getElementById("phone_number").value.trim();
-            if (!phoneNumber.match(/^[6-9]\d{9}$/) || phoneNumber.length === 0) {
-                alert("Enter a valid Mobile Number");
-                event.preventDefault();
-                return;
-            }
-
-            // Validation for Street Name
-            var streetName = document.getElementById("street_name").value.trim();
-            if (!streetName.match(/^[a-zA-Z\s]+$/) || streetName.length === 0) {
-                alert("Enter a valid Street Name");
-                event.preventDefault();
-                return;
-            }
-
-            // Validation for Village/City
-            var village = document.getElementById("Village").value.trim();
-            if (!village.match(/^[a-zA-Z\s]+$/) || village.length === 0) {
-                alert("Enter a valid Village/City Name");
-                event.preventDefault();
-                return;
-            }
-
-            // Validation for Postal Code
-            var postalCode = document.getElementById("postal_code").value.trim();
-            if (!postalCode.match(/^\d{6}$/) || postalCode.length === 0) {
-                alert("Enter a valid Postal Code");
-                event.preventDefault();
-                return;
-            }
-
-            // Validation for District
-            var district = document.getElementById("district").value.trim();
-            if (!district.match(/^[a-zA-Z\s]+$/) || district.length === 0) {
-                alert("Enter a valid District Name");
-                event.preventDefault();
-                return;
-            }
-
-            // Validation for State
-            var state = document.getElementById("state").value.trim();
-            if (!state.match(/^[a-zA-Z\s]+$/) || state.length === 0) {
-                alert("Enter a valid State Name");
-                event.preventDefault();
-                return;
-            }
-
-            // Validation for Country
-            var country = document.getElementById("country").value.trim();
-            if (!country.match(/^[a-zA-Z\s]+$/) || country.length === 0) {
-                alert("Enter a valid Country Name");
-                event.preventDefault();
-                return;
-            }
-        });
-    });
 </script>
 {% endblock script %}
