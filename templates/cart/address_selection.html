@@ -39,14 +39,18 @@
             {% endfor %}
         </div>
         {% if address %}
+        {% if default_address %}
             <div class="d-flex justify-content-center mb-5">
                 <button type="submit" class="btn btn-secondary">
                     GO TO CHECKOUT
-                </button>    
+                </button>
             </div>
-        {% else %}
-            <p>No addresses found. Please add an address first.</p>
         {% endif %}
+        {% else %}
+        <div class="text-center mt-5">
+            <p style="font-size: 18px; color: red;">No addresses found. Please add an address first.</p>
+        </div>
+         {% endif %}
 
 
 
