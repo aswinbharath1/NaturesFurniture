@@ -61,21 +61,48 @@
         crossorigin="anonymous"></script> -->
 
         
-<script>
-    // Countdown timer for 2 minutes (120 seconds)
-    var timeleft = 60;
-    var timer = setInterval(function() {
-        var minutes = Math.floor(timeleft / 60);
-        var seconds = timeleft % 60;
-
-        document.getElementById('timer').innerHTML = 'Time remaining: ' + minutes + ' minutes ' + seconds + ' seconds';
-        timeleft--;
-
-        if (timeleft < 0) {
-            clearInterval(timer);
-            document.getElementById('timer').innerHTML = 'Time is up!';
-            // Here you can perform additional actions when the timer reaches 0
-        }
-    }, 1000); // Update the timer every 1 second (1000 milliseconds)
-</script>
+        <script>
+            // Function to start or resume the timer
+            function startTimer() {
+                // Get remaining time from localStorage or set it to 60 seconds if not present
+                var timeleft = localStorage.getItem('otpTimer') || 60;
+    
+                // Update the timer every 1 second (1000 milliseconds)
+                var timer = setInterval(function () {
+                    var minutes = Math.floor(timeleft / 60);
+                    var seconds = timeleft % 60;
+    
+                    document.getElementById('timer').innerHTML =
+                        'Time remaining: ' + minutes + ' minutes ' + seconds + ' seconds';
+                    timeleft--;
+    
+                    // Store remaining time in localStorage
+                    localStorage.setItem('otpTimer', timeleft);
+    
+                    if (timeleft < 0) {
+                        clearInterval(timer);
+                        document.getElementById('timer').innerHTML = 'Time is up!';
+                        // Here you can perform additional actions when the timer reaches 0
+                    }
+                }, 1000);
+            }
+    
+            // Call the function to start or resume the timer
+            startTimer();
+    
+            // Add an event listener for the form submission
+            document.querySelector('.otp-form').addEventListener('submit', function (event) {
+                // Check if the entered OTP is correct (you need to implement this logic)
+                var isCorrect = true; // Change this based on your logic
+    
+                if (!isCorrect) {
+                    // If incorrect, prevent the default form submission
+                    event.preventDefault();
+                    // Reset the timer to 60 seconds
+                    localStorage.setItem('otpTimer', 60);
+                    // Redirect or show an error message
+                    // Example: window.location.href = '/error';
+                }
+            });
+        </script>
 {% endblock %}
