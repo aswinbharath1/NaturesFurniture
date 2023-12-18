@@ -67,8 +67,7 @@
 
     <div class="d-flex justify-content-center">
         <div class="my-4">
-            {% comment %} <form method="POST" action="{% url 'add_address_checkout' user_id=user.id %}"> {% endcomment %}
-            <form method="POST" action="{% url 'add_address_checkout' user_id=user.id %}" id="addressForm" onsubmit="validateForm(event)">
+            <form method="POST" action="{% url 'add_address_checkout' user_id=user.id %}">
 
                 {% csrf_token %}
                 <div class="row">
@@ -134,9 +133,10 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-center col-lg-12 mt-2">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" onclick="validateForm()">
                         Save the Address
                     </button>
+                </div>
                 </div>
             </form>
         </div>
