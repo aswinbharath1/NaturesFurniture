@@ -4,6 +4,9 @@ from django.shortcuts import get_object_or_404, render,redirect
 from store.models import Product, Variation
 from categories.models import Category,Sub_Category
 from django.contrib import messages
+from dashboard.views import is_admin
+from django.contrib.auth.decorators import user_passes_test
+
 # Create your views here.
 def ProductView(request):
     if 'adminmail' in request.session:
@@ -90,7 +93,7 @@ def DeleteProduct(request,product_id):
             'sub_category' : sub_categories,
         }
         return render(request,'dashboard/product.html',context)
-
+@user_passes_test(is_admin, login_url='admin_login')
 def VariantView(request,product_id):
 
     variants = Variation.objects.filter(product=product_id)

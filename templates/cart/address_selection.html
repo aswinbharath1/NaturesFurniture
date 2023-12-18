@@ -38,12 +38,22 @@
             </div>
             {% endfor %}
         </div>
-        <div class="d-flex justify-content-center mb-5">
-            <button type="submit" class="btn btn-secondary">
-                GO TO CHECKOUT
-            </button>    
-        </div>
-    </form>
+        {% if address %}
+            <div class="d-flex justify-content-center mb-5">
+                <button type="submit" class="btn btn-secondary">
+                    GO TO CHECKOUT
+                </button>    
+            </div>
+        {% else %}
+            <p>No addresses found. Please add an address first.</p>
+        {% endif %}
+
+
+
+
+
+
+</form>
 
  
     <h1 class="d-flex justify-content-center">OR</h1>
