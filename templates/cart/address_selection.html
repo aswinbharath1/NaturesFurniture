@@ -53,7 +53,8 @@
 
     <div class="d-flex justify-content-center">
         <div class="my-4">
-            <form method="POST" action="{% url 'add_address_checkout' user_id=user.id %}">
+            <form method="POST" action="{% url 'add_address_checkout' user_id=user.id %}" onsubmit="return validateForm()">
+
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-md-6">
@@ -160,4 +161,73 @@
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous">
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('form').addEventListener('submit', function (event) {
+            var recipientName = document.getElementById('RecipientName').value.trim();
+            var houseNo = document.getElementById('house_no').value.trim();
+            var streetName = document.getElementById('street_name').value.trim();
+            var village = document.getElementById('Village').value.trim();
+            var postalCode = document.getElementById('postal_code').value.trim();
+            var district = document.getElementById('district').value.trim();
+            var state = document.getElementById('state').value.trim();
+            var country = document.getElementById('country').value.trim();
+
+            if (!isValidString(recipientName)) {
+                alert('Recipient name should not be empty.');
+                event.preventDefault();
+            }
+
+            if (!isPositiveNumber(houseNo)) {
+                alert('House number should be a positive number.');
+                event.preventDefault();
+            }
+
+            if (!isValidString(streetName)) {
+                alert('Street name should not be empty.');
+                event.preventDefault();
+            }
+
+            if (!isValidString(village)) {
+                alert('Village/City name should not be empty.');
+                event.preventDefault();
+            }
+
+            if (!isValidPostalCode(postalCode)) {
+                alert('Postal code should be a 6-digit positive number.');
+                event.preventDefault();
+            }
+
+            if (!isValidString(district)) {
+                alert('District name should not be empty.');
+                event.preventDefault();
+            }
+
+            if (!isValidString(state)) {
+                alert('State name should not be empty.');
+                event.preventDefault();
+            }
+
+            if (!isValidString(country)) {
+                alert('Country name should not be empty.');
+                event.preventDefault();
+            }
+        });
+
+        function isValidString(value) {
+            return value !== '';
+        }
+
+        function isPositiveNumber(value) {
+            return /^\d+$/.test(value) && parseInt(value, 10) > 0;
+        }
+
+        function isValidPostalCode(value) {
+            return /^\d{6}$/.test(value);
+        }
+    });
+</script>
+
+
 {% endblock script %}

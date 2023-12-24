@@ -242,6 +242,13 @@
         var files = input.files;
         var fileCount = files.length;
 
+        // Check if no files are selected
+        if (fileCount === 0) {
+            alert('Please select at least one image.');
+            input.value = ''; // Clear the file input
+            return;
+        }
+
         // Check the number of selected files
         if (fileCount < minImageCount) {
             alert('Please upload at least ' + minImageCount + ' images.');

@@ -519,7 +519,7 @@
 </div>
 
 <!-- this modal is for selecting default address for user -->
-<div class="modal" id="defaultAddressModal">
+<div class="modal" id="myModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -531,7 +531,7 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-
+                
                 <form method="POST" action="{% url 'default_address'%}">
                     {% csrf_token %}
                     <div class="mt-2">
@@ -540,12 +540,10 @@
 
                             <option selected disabled>Select an address</option>
 
-                            {% for addres in address%}
-                                {% if addres.is_default == False %}
-                                    <option value="{{addres.id}}">
-                                        {{addres.recipient_name}}/{{addres.house_no}}/{{addres.street_name}}/{{addres.village_name}}/{{addres.postal_code}}/{{addres.district}}/{{addres.state}}/{{addres.country}}
-                                    </option>
-                                {% endif %}
+                            {% for address in address%}
+                            <option value="{{address.id}}">
+                                {{address.recipient_name}}/{{address.house_no}}/{{address.street_name}}/{{address.village_name}}/{{address.postal_code}}/{{address.district}}/{{address.state}}/{{address.country}}
+                            </option>
                             {% endfor %}
                         </select>
                     </div>
@@ -555,10 +553,7 @@
                     </div>
                 </form>
             </div>
-
             <!-- Modal footer -->
-
-
         </div>
     </div>
 </div>

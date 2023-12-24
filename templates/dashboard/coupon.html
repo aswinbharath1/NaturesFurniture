@@ -27,7 +27,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="POST" action="{% url 'add_coupon' %}" enctype="multipart/form-data" onsubmit="return validateCouponForm('couponName', 'couponCode', 'discountAmount', 'validFrom', 'validTo', 'minimumAmount')">
+                <form method="POST" action="{% url 'add_coupon' %}" enctype="multipart/form-data" onsubmit="return validateAddCouponForm('couponName', 'couponCode', 'discountAmount', 'validFrom', 'validTo', 'minimumAmount')">
 
 
                     {% csrf_token %}
@@ -86,7 +86,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{% url 'edit_coupon' coupon_id=coupon.id %}" enctype="multipart/form-data" onsubmit="return validateCouponForm('editCouponName', 'editCouponCode', 'editDiscountAmount', 'editValidFrom', 'editValidTo', 'editMinimumAmount')">
+                    <form method="POST" action="{% url 'edit_coupon' coupon_id=coupon.id %}" enctype="multipart/form-data" onsubmit="return validateEditCouponForm('editCouponName', 'editCouponCode', 'editDiscountAmount', 'editValidFrom', 'editValidTo', 'editMinimumAmount')">
                         {% csrf_token %}
     
                         <div class="modal-body">
@@ -223,7 +223,9 @@ $(document).ready(function () {
     $('#example').DataTable();
 });
 
-function validateCouponForm(couponNameId, couponCodeId, discountAmountId, validFromId, validToId, minimumAmountId) {
+</script>
+<script>
+function  validateAddCouponForm(couponNameId, couponCodeId, discountAmountId, validFromId, validToId, minimumAmountId) {
     // Get form inputs
     var couponName = document.getElementById(couponNameId).value.trim();
     var couponCode = document.getElementById(couponCodeId).value;
@@ -287,19 +289,83 @@ function validateCouponForm(couponNameId, couponCodeId, discountAmountId, validF
         return false;
     }
     // Perform additional validations as needed
-    if (!/^\d+$/.test(minimumAmount) || parseInt(minimumAmount, 10) <= 0) {
-        alert('Please enter a valid positive integer for Minimum Amount.');
-        return false;
-    }
+    
     // If all validations pass, return true to submit the form
     return true;
 }
 </script>
 
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<script>
+    
+    function  validateEditCouponForm(editCouponName, editCouponCode, editDiscountAmount, editValidFrom, editValidTo, editMinimumAmount)
+        // Get form inputs
+
+    var couponName = document.getElementById(editCouponName).value.trim();
+    var couponCode = document.getElementById(editCouponCode).value;
+    var discountAmount = document.getElementById(editDiscountAmount).value;
+    var validFrom = document.getElementById(editValidFrom).value;
+    var validTo = document.getElementById(editValidTo).value;
+    var minimumAmount = document.getElementById(editMinimumAmount).value;
+
+    // Perform validations
+    
+    // Perform validations
+    if (!/^[a-zA-Z][a-zA-Z\s]{0,9}$/.test(couponName)) {
+        alert('Please enter a valid coupon name with up to 10 letters and spaces.');
+        return false;
+    }
+
+
+    // Check if coupon name is only spaces
+    if (/^\s+$/.test(couponName)) {
+        alert('Coupon name cannot be only spaces.');
+        return false;
+    }
+    
+    // Check if coupon name length is between 3 and 12 characters
+    if (couponName.length < 3 || couponName.length > 10) {
+        alert('Coupon name should be between 3 and 10 characters.');
+        return false;
+    }
+
+    if (couponCode.trim() === '' || !/^[a-zA-Z0-9]+$/.test(couponCode)) {
+        alert('Please enter a valid coupon code.');
+        return false;
+    }
+
+    if (isNaN(discountAmount) || parseInt(discountAmount) < 1) {
+        alert('Please enter a valid discount amount.');
+        return false;
+    }
+
+    // Convert date strings to Date objects for comparison
+    var startDate = new Date(validFrom);
+    var endDate = new Date(validTo);
+
+    // Check if start date is before end date
+    if (startDate >= endDate) {
+        alert('End date must be after the start date.');
+        return false;
+    }
+
+    // Check if start date is before or equal to the current date
+    var currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    if (startDate <= currentDate) {
+        alert('Start date must be after the current date.');
+        return false;
+    }
+
+    // Check if end date is before or equal to the current date
+    if (endDate <= currentDate) {
+        alert('End date must be after the current date.');
+        return false;
+    }
+    // Perform additional validations as needed
+    
+    // If all validations pass, return true to submit the form
+    return true;
+}
+</script>
 
 {% endblock %}

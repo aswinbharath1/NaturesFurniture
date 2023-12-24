@@ -119,6 +119,7 @@ def DeleteAddress(request,address_id):
 def DefaultAddress(request):
     if request.method =='POST':
         try:
+            # Attempt to retrieve the default address
             default_address_check = Address.objects.get(is_default=True)
             
             # If a default address exists, remove the old default address
@@ -214,21 +215,27 @@ def RenderToPdf(template_src, context_dict={}):
 def PdfDownload(request,id):
     order=Order.objects.get(id=id)
     neworderitems=OrderItem.objects.filter(order=order)
-    try:
-        coupons = Coupon.objects.filter(coupon_name = order.coupon_applied)
-    except:
-        coupons = None
-        pass
-    context = {
+    #    cart_items = CartItem.objects.filter(cart=cart,is_active=True).order_by('id')
+    total,quantity,tax,discount=0,0,0,0
+    for cart_item in neworderitems:
+        total += (cart_item.variant.selling_price * cart_item.quantity)
+        quantity += cart_item.quantity
+    tax = (2*total)/100
+    discount =abs(float(total)+float(tax)-order.total_price)
+    cont = {
         'order': order,
         'cart_items': neworderitems,
-        'coupons' : coupons,
+        'total':total,
+        'tax':tax,
+        'discount':discount
     }
-    pdf = RenderToPdf('userprofile/order_invoice.html', context)
+    pdf = RenderToPdf('userprofile/order_invoice.html', cont)
     if pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
-        filename = "Invoice_%s.pdf" % (context['order'])
+        filename = "Invoice_%s.pdf" % (cont['order'])
         content = "inline; filename='%s'" % (filename)
+        # download = request.GET.get("download")
+        # if download:
         content = "attachment; filename=%s" % (filename)
         response['Content-Disposition'] = content
         return response
