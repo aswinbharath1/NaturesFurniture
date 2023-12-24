@@ -133,7 +133,7 @@
                         </div>
                         <div class="form-group col">
                             <label for="imageUpload">Variant Image</label>
-                            <input type="file" class="form-control" id="imageUpload" name="VariantImage"  multiple required>
+                            <input type="file" class="form-control" id="imageUpload" name="VariantImage"  multiple >
                         </div>
 
                         <div class="modal-footer">
@@ -260,9 +260,9 @@
 
     // Function to handle form submission for edit variant modal
     function validateEditVariantForm() {
-        var actualPrice = document.getElementById('ActualPrice').value;
+        var actualPrice = parseInt(document.getElementById('ActualPrice').valu)e;
+        
         var sellingPrice = document.getElementById('SellingPrice').value;
-        var imageUpload = document.getElementById('imageUpload');
 
         if (!validatePositiveInteger(actualPrice) || !validatePositiveInteger(sellingPrice) || !validatePrice(sellingPrice, actualPrice) ) {
             alert("Validation failed. Please check your inputs.");
