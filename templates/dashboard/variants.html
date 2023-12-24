@@ -93,8 +93,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{% url 'edit_variants' variant_id=variant.id %}"
-                        enctype="multipart/form-data">
+                    <form method="POST" action="{% url 'edit_variants' variant_id=variant.id %}" onsubmit="return validateEditVariantForm()" enctype="multipart/form-data">
+
                         {% csrf_token %}
 
                         <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
@@ -116,7 +116,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="VariantStock">Stock</label>
                                     <input type="number" class="form-control" id="stock" name="stock"
-                                        value="{{variant.stock}}" pattern='/^[0-9]\S*$/' required>
+                                        value="{{variant.stock}}"  required>
                                 </div>
                             </div>
                         </div>
@@ -124,16 +124,16 @@
                         <div class="form-group col">
                             <label for="VariantActualPrice">Actual Price</label>
                             <input type="number" class="form-control" id="ActualPrice" name="ActualPrice"
-                                value="{{variant.actual_price}}" pattern='/^[0-9]\S*$/' required>
+                                value="{{variant.actual_price}}"  required>
                         </div>
                         <div class="form-group col">
                             <label for="VariantSellingPrice">Selling Price</label>
                             <input type="number" class="form-control" id="SellingPrice" name="SellingPrice"
-                                value="{{variant.selling_price}}" pattern='/^[0-9]\S*$/' required>
+                                value="{{variant.selling_price}}"  required>
                         </div>
                         <div class="form-group col">
                             <label for="imageUpload">Variant Image</label>
-                            <input type="file" class="form-control" id="imageUpload" name="VariantImage" onchange="validateImageUpload(this)" multiple>
+                            <input type="file" class="form-control" id="imageUpload" name="VariantImage"  multiple required>
                         </div>
 
                         <div class="modal-footer">
@@ -159,8 +159,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="POST" action="{% url 'add_variant' product_id=product.id %}"
-                    enctype="multipart/form-data">
+                <form method="POST" action="{% url 'add_variant' product_id=product.id %}" onsubmit="return validateAddProductForm()" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
                         <div class="form-row">
@@ -196,7 +195,7 @@
                     
                     <div class="form-group col">
                         <label for="imageUpload">Variant Image</label>
-                        <input type="file" class="form-control" id="imageUpload" name="VariantImage" onchange="validateImageUpload(this)" multiple>
+                        <input type="file" class="form-control" id="imageUpload" name="VariantImage"  multiple required>
                     </div>
 
                     <div class="modal-footer">
@@ -235,38 +234,63 @@
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 <script>
-    function validateImageUpload(input) {
-        var validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-        var minImageCount = 4;
+    // Function to validate positive integers
+    function validatePositiveInteger(value) {
+        return /^\d+$/.test(value) && parseInt(value) > 0;
+    }
 
-        var files = input.files;
-        var fileCount = files.length;
+    // Function to validate selling price not higher than actual price
+    function validatePrice(sellingPrice, actualPrice) {
+        return parseInt(sellingPrice) <= parseInt(actualPrice);
+    }
 
-        // Check if no files are selected
-        if (fileCount === 0) {
-            alert('Please select at least one image.');
-            input.value = ''; // Clear the file input
-            return;
-        }
+    // Function to validate image count and type
+    function validateImageUpload(inputField) {
+        var files = inputField.files;
+        var imageCount = 0;
 
-        // Check the number of selected files
-        if (fileCount < minImageCount) {
-            alert('Please upload at least ' + minImageCount + ' images.');
-            input.value = ''; // Clear the file input
-            return;
-        }
-
-        // Check each file's extension
-        for (var i = 0; i < fileCount; i++) {
-            var fileName = files[i].name.toLowerCase();
-            var fileExtension = fileName.split('.').pop();
-
-            if (!validExtensions.includes(fileExtension)) {
-                alert('Please upload only valid image files (jpg, jpeg, png, or gif).');
-                input.value = ''; // Clear the file input
-                return;
+        for (var i = 0; i < files.length; i++) {
+            if (files[i].type.includes("image")) {
+                imageCount++;
             }
         }
+
+        return imageCount >= 4 && imageCount === files.length;
+    }
+
+    // Function to handle form submission for edit variant modal
+    function validateEditVariantForm() {
+        var actualPrice = document.getElementById('ActualPrice').value;
+        var sellingPrice = document.getElementById('SellingPrice').value;
+        var imageUpload = document.getElementById('imageUpload');
+
+        if (!validatePositiveInteger(actualPrice) || !validatePositiveInteger(sellingPrice) || !validatePrice(sellingPrice, actualPrice) || !validateImageUpload(imageUpload)) {
+            alert("Validation failed. Please check your inputs.");
+            return false;
+        }
+
+        // Additional custom validation if needed
+
+        return true;
+    }
+
+    // Function to handle form submission for add product modal
+    function validateAddProductForm() {
+        var actualPrice = document.getElementById('ActualPrice').value;
+        var sellingPrice = document.getElementById('SellingPrice').value;
+        var imageUpload = document.getElementById('imageUpload');
+
+        if (!validatePositiveInteger(actualPrice) || !validatePositiveInteger(sellingPrice) || !validatePrice(sellingPrice, actualPrice) || !validateImageUpload(imageUpload)) {
+            alert("Validation failed. Please check your inputs.");
+            return false;
+        }
+
+        // Additional custom validation if needed
+
+        return true;
     }
 </script>
+
+
+
 {% endblock %}
