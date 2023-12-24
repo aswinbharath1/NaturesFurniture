@@ -97,6 +97,7 @@ WSGI_APPLICATION = 'NaturesFurniture.wsgi.application'
 #         'PORT': '5432',
 #     }
 # }
+
 DATABASES = {
 
    					 'default': {
