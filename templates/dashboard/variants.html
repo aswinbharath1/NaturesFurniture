@@ -260,9 +260,9 @@
 
     // Function to handle form submission for edit variant modal
     function validateEditVariantForm() {
-        var actualPrice = parseInt(document.getElementById('ActualPrice').valu)e;
+        var actualPrice = parseInt(document.getElementById('ActualPrice').value);
         
-        var sellingPrice = document.getElementById('SellingPrice').value;
+        var sellingPrice = parseInt(document.getElementById('SellingPrice').value);
 
         if (!validatePositiveInteger(actualPrice) || !validatePositiveInteger(sellingPrice) || !validatePrice(sellingPrice, actualPrice) ) {
             alert("Validation failed. Please check your inputs.");
