@@ -53,21 +53,20 @@
 
     <div class="d-flex justify-content-center">
         <div class="my-4">
-            <form method="POST" action="{% url 'add_address_checkout' user_id=user.id %}" onsubmit="return validateForm()">
-
+            <form method="POST" action="{% url 'add_address_checkout' user_id=user.id %}">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="RecipientName" class="form-label">Recipient Name:</label>
-                            <input type="text" class="form-control" id="RecipientName" name="RecipientName" value=""
-                                required>
+                            <input type="text" class="form-control" id="RecipientName" name="RecipientName" value="" pattern"^(?!^\s*$).*$"
+                            title="Recipient name cannot be empty"  required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="house_no" class="form-label">House No:</label>
-                            <input type="text" class="form-control" id="house_no" name="house_no" value="" required>
+                            <input type="text" class="form-control" id="house_no" name="house_no" value="" pattern"^\d{1,5}$" title="Please Enter A Valid House Number " required>
                         </div>
                     </div>
                 </div>
@@ -76,14 +75,13 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="street_name" class="form-label">Street Name:</label>
-                            <input type="text" class="form-control" id="street_name" name="street_name" value=""
-                                required>
+                            <input type="text" class="form-control" id="street_name" name="street_name" value="" pattern="^(?!^\s*$).*$" title="street name should not be empty"  required >
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="Village" class="form-label">Village/City:</label>
-                            <input type="text" class="form-control" id="Village" name="Village" value="" required>
+                            <input type="text" class="form-control" id="Village" name="Village" value="" pattern="^(?!^\s*$).*$" title="Please enter the Village/Street name" required>
                         </div>
                     </div>
                 </div>
@@ -92,14 +90,14 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="postal_code" class="form-label">Postal Code:</label>
-                            <input type="text" class="form-control" id="postal_code" name="postal_code" value=""
+                            <input type="text" class="form-control" id="postal_code" name="postal_code" value="^\d{6}$" title="Please enter a  valid Postal code" pattern=""
                                 required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="district" class="form-label">District:</label>
-                            <input type="text" class="form-control" id="district" name="district" value="" required>
+                            <input type="text" class="form-control" id="district" name="district" value="" pattern="^(?!\s*$).*$" required>
                         </div>
                     </div>
                 </div>
@@ -108,13 +106,13 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="state" class="form-label">State:</label>
-                            <input type="text" class="form-control" id="state" name="state" value="" required>
+                            <input type="text" class="form-control" id="state" name="state" value="" pattern="^(?!\s*$).*$" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="country" class="form-label">Country:</label>
-                            <input type="text" class="form-control" id="country" name="country" value="" required>
+                            <input type="text" class="form-control" id="country" name="country" value="" pattern="^(?!\s*$).*$" required>
                         </div>
                     </div>
                 </div>
@@ -161,73 +159,4 @@
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous">
 </script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelector('form').addEventListener('submit', function (event) {
-            var recipientName = document.getElementById('RecipientName').value.trim();
-            var houseNo = document.getElementById('house_no').value.trim();
-            var streetName = document.getElementById('street_name').value.trim();
-            var village = document.getElementById('Village').value.trim();
-            var postalCode = document.getElementById('postal_code').value.trim();
-            var district = document.getElementById('district').value.trim();
-            var state = document.getElementById('state').value.trim();
-            var country = document.getElementById('country').value.trim();
-
-            if (!isValidString(recipientName)) {
-                alert('Recipient name should not be empty.');
-                event.preventDefault();
-            }
-
-            if (!isPositiveNumber(houseNo)) {
-                alert('House number should be a positive number.');
-                event.preventDefault();
-            }
-
-            if (!isValidString(streetName)) {
-                alert('Street name should not be empty.');
-                event.preventDefault();
-            }
-
-            if (!isValidString(village)) {
-                alert('Village/City name should not be empty.');
-                event.preventDefault();
-            }
-
-            if (!isValidPostalCode(postalCode)) {
-                alert('Postal code should be a 6-digit positive number.');
-                event.preventDefault();
-            }
-
-            if (!isValidString(district)) {
-                alert('District name should not be empty.');
-                event.preventDefault();
-            }
-
-            if (!isValidString(state)) {
-                alert('State name should not be empty.');
-                event.preventDefault();
-            }
-
-            if (!isValidString(country)) {
-                alert('Country name should not be empty.');
-                event.preventDefault();
-            }
-        });
-
-        function isValidString(value) {
-            return value !== '';
-        }
-
-        function isPositiveNumber(value) {
-            return /^\d+$/.test(value) && parseInt(value, 10) > 0;
-        }
-
-        function isValidPostalCode(value) {
-            return /^\d{6}$/.test(value);
-        }
-    });
-</script>
-
-
 {% endblock script %}
