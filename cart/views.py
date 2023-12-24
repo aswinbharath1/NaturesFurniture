@@ -386,8 +386,12 @@ def AddressCheckout(request):
             print(i.recipient_name)
         try:
             default_address =Address.objects.get(is_default=True)  
+
         except:
             default_address = None
+        if default_address == None:
+            messages.error(request,'Please choose An address')
+            return redirect('address_checkout')
         
         context={
             'address':address,
