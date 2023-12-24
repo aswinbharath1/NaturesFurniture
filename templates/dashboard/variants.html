@@ -264,7 +264,7 @@
         var sellingPrice = document.getElementById('SellingPrice').value;
         var imageUpload = document.getElementById('imageUpload');
 
-        if (!validatePositiveInteger(actualPrice) || !validatePositiveInteger(sellingPrice) || !validatePrice(sellingPrice, actualPrice) || !validateImageUpload(imageUpload)) {
+        if (!validatePositiveInteger(actualPrice) || !validatePositiveInteger(sellingPrice) || !validatePrice(sellingPrice, actualPrice) ) {
             alert("Validation failed. Please check your inputs.");
             return false;
         }

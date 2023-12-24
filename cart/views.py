@@ -293,13 +293,12 @@ def CheckoutPage(request):
             selected_address_id=request.POST.get('selectedAddress')
             if selected_address_id is None:
                 try:
-                    default_address=Address.objects.get(user_id=user_id,is_default=True)
+                    default_address=Address.objects.get(user_id=user_id  , is_default=True)
                     selected_address_id=default_address.id
                 except:
                     default_address = None
-                    if default_address == None:
-                        messages.error(request,'Please choose An address')
-                        return redirect('address_checkout')
+                    messages.error(request,'Please choose An address')
+                    return redirect('address_checkout')
 
 
             print(selected_address_id)
@@ -355,7 +354,6 @@ def CheckoutPage(request):
         coupons=None
         cart_id = CartId(request) #get or generate the cart_id
         try:    
-            print("aaaaaaaaaaaaaaaa")
             cart = Cart.objects.get(user=user)
             cart_items = CartItem.objects.filter(cart=cart,is_active=True)
             for cart_item in cart_items:
@@ -364,9 +362,7 @@ def CheckoutPage(request):
             tax = (2*total)/100
             grand_total = total + tax
             coupons=Coupon.objects.filter(minimum_amount__lte=grand_total)
-            print("bbbbbbbbbbbbb")
         except ObjectDoesNotExist:
-            print("cccccccccccccccccc")    
             pass
 
         context = {
