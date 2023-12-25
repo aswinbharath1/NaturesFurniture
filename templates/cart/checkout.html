@@ -169,34 +169,36 @@
 
 {%endblock content%}
 
-
 {% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
     function copyText(button) {
-     // Find the input element related to the clicked button
-     var couponCodeInput = button.parentElement.querySelector('.coupon-code');
- 
-     // Select the text inside the input
-     couponCodeInput.select();
-     couponCodeInput.setSelectionRange(0, 99999); // For mobile devices
- 
-     // Copy the text to clipboard
-     document.execCommand('copy');
- 
-     // Optionally, provide some feedback to the user
-     //alert('Copied the coupon code: ' + couponCodeInput.value);
-     // Show the alert message when the code is copied
-     var alertMessage = button.parentElement.querySelector('.alert');
-     alertMessage.style.display = 'block';
- 
-     // Hide the alert after a certain time (e.g., 3 seconds)
-     setTimeout(function() {
-         alertMessage.style.display = 'none';
-     }, 3000);
- }
- 
- </script>
- <script>
+        // Find the input element related to the clicked button
+        var couponCodeInput = button.parentElement.querySelector('.coupon-code');
+
+        // Select the text inside the input
+        couponCodeInput.select();
+        couponCodeInput.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the text to clipboard
+        document.execCommand('copy');
+
+        // Optionally, provide some feedback to the user
+        //alert('Copied the coupon code: ' + couponCodeInput.value);
+        // Show the alert message when the code is copied
+        var alertMessage = button.parentElement.querySelector('.alert');
+        alertMessage.style.display = 'block';
+
+        // Hide the alert after a certain time (e.g., 3 seconds)
+        setTimeout(function () {
+            alertMessage.style.display = 'none';
+        }, 3000);
+    }
+
     jQuery.noConflict(); // Release the $ variable
 
     var couponApplied = false; // Flag to check if the coupon is already applied
@@ -245,66 +247,54 @@
         });
     });
 
+    $(document).ready(function () {
+
+        $('.paywithwallet').click(function (e) {
+            e.preventDefault();
+            console.log("Clicked the wallet button");
+            var address_id = $("[name='selected_address']").val();
+            var token = $("[name='csrfmiddlewaretoken']").val();
+
+            data = {
+                'selected_address': address_id,
+                'payment_mode': 'wallet',
+                'payment_id': '',
+                csrfmiddlewaretoken: token,
+
+            };
+            $.ajax({
+                url: '/cart/place-order/',
+                method: 'POST',
+                data: data,
+
+                success: function (responseData) {
+                    console.log(responseData);
+                    swal({
+                        title: "Congratulations!",
+                        text: "Your order has been placed successfully",
+                        icon: "success",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            console.log('...........');
+                            window.location.href = '/cart/order-success/'
+                        } else {
+                            swal("Your imaginary file is safe!");
+                        }
+                    });
+                },
+                error: function (error) {
+                    // Callback function to handle errors
+                    console.error('Error:', error);
+                }
+            });
+
+        });
+
+    });
 </script>
- <script>
-     $(document).ready(function () {
- 
-         $('.paywithwallet').click(function (e) {
-             e.preventDefault();
-             console.log("Clicked the wallet buttonn");
-             var address_id = $("[name='selected_address']").val();
-             var token = $("[name='csrfmiddlewaretoken']").val();
-     
-             data = {
-                 'selected_address': address_id,
-                 'payment_mode': 'wallet',
-                 'payment_id': '',
-                 csrfmiddlewaretoken: token,
-     
-             };
-             $.ajax({
-                 url: '/cart/place-order/',
-                 method: 'POST',
-                 data: data,
-                 
-                 success: function (responseData) {
-                 console.log(responseData);
-                     swal({
-                         title: "Congratulations!",
-                         text: "Your order has been placed successfully",
-                         icon: "success",
-                         buttons: true,
-                         dangerMode: true,
-                     }).then((willDelete) => {
-                         if (willDelete) {
-                         console.log('...........');
-                             window.location.href = '/cart/order-success/'
-                         } else {
-                             swal("Your imaginary file is safe!");
-                         }
-                     });
-                 },
-                 error: function (error) {
-                     // Callback function to handle errors
-                     console.error('Error:', error);
-                 }
-             });
-     
-     
-     
-         });
- 
-     });
- </script>
-
-
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
-
-
 {% endblock script %}
+
+
+

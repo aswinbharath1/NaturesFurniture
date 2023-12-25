@@ -295,9 +295,6 @@ def CheckoutPage(request):
                 default_address=Address.objects.get(user_id=user_id  , is_default=True)
                 selected_address_id=default_address.id
                 
-                    
-
-
             print(selected_address_id)
             address = Address.objects.get(id=selected_address_id) #using the user id getting all addresses associated with that user
 
