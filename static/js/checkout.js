@@ -26,7 +26,7 @@ $(document).ready(function () {
                     alert(data.total_price)
                     var options = {
                         "key": "rzp_test_Rfp1v8lrP3e3e1",
-                        "amount": data.total_price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        "amount": parseInt(data.total_price * 100), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                         "currency": "INR",
                         "name":  'ASWIN',
                         "description": "Thank you",
