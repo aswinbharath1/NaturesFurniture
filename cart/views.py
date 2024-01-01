@@ -554,6 +554,7 @@ def RazorpayCheck(request):
             return JsonResponse({'error': 'Cart not found'}, status=400)
 
         cart_items = CartItem.objects.filter(cart=cart)
+        #check the total price
         total_price = 0
         
         for item in cart_items:
