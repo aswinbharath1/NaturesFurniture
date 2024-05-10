@@ -117,24 +117,31 @@ WSGI_APPLICATION = 'NaturesFurniture.wsgi.application'
 #     						}
 # 					}
 
+# DATABASES = {
+
+#    					 'default': {
+
+#        					 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+#         				 'NAME': 'myproject_70zx',
+
+#         				 'USER': 'myproject_70zx_user',
+
+#         				 'PASSWORD': 'e5JNzfkHnlM8gPkjpZVR9NrXLZPT6Gp1',
+
+#        					 'HOST': 'dpg-court7vsc6pc73apvkh0-a',
+
+#         				 'PORT': '5432',
+
+#     						}
+# 					}
+
+import dj_database_url
+
 DATABASES = {
+	"default": dj_database_url.parse(os.environ.get("postgres://myproject_70zx_user:e5JNzfkHnlM8gPkjpZVR9NrXLZPT6Gp1@dpg-court7vsc6pc73apvkh0-a/myproject_70zx"))
+}
 
-   					 'default': {
-
-       					 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
-        				 'NAME': 'myproject_70zx',
-
-        				 'USER': 'myproject_70zx_user',
-
-        				 'PASSWORD': 'e5JNzfkHnlM8gPkjpZVR9NrXLZPT6Gp1',
-
-       					 'HOST': 'dpg-court7vsc6pc73apvkh0-a',
-
-        				 'PORT': '5432',
-
-    						}
-					}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
