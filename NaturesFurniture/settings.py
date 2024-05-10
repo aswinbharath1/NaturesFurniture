@@ -138,9 +138,14 @@ WSGI_APPLICATION = 'NaturesFurniture.wsgi.application'
 
 import dj_database_url
 
+# Internal database URL
+internal_db_url = "postgres://myproject_70zx_user:e5JNzfkHnlM8gPkjpZVR9NrXLZPT6Gp1@dpg-court7vsc6pc73apvkh0-a.singapore-postgres.render.com/myproject_70zx"
+
+# Parse the internal database URL using dj_database_url
 DATABASES = {
-	"default": dj_database_url.parse(os.environ.get("postgres://myproject_70zx_user:e5JNzfkHnlM8gPkjpZVR9NrXLZPT6Gp1@dpg-court7vsc6pc73apvkh0-a/myproject_70zx"))
+    'default': dj_database_url.parse(internal_db_url)
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
